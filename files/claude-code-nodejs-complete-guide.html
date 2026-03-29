@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code · Node.js / Express Complete Guide</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f2;--surf:#fff;--s2:#f1f0ea;--s3:#e9e7df;
+  --bd:#dddad0;--bd2:#c9c6bb;
+  --tx:#1b1b17;--t2:#57574f;--t3:#96958d;
+  --acc:#b85c1e;--al:#f6eee8;--ab:#e8b898;
+  --blue:#1858a0;--bl:#edf3fc;--bb:#a4c4f0;
+  --grn:#1a6e38;--gl:#ecf7f0;--gb:#84cc9c;
+  --pur:#5030a0;--pl:#f1edfb;--pb:#b8a4e8;
+  --warn:#7a5610;--wl:#fdf8eb;--wb:#e8ce84;
+  --red:#8a2020;--rl:#fdf0f0;--rb:#e8a4a4;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --r:10px;--rs:6px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04)
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#15151a;--surf:#1e1e24;--s2:#26262e;--s3:#2e2e38;
+  --bd:#36363e;--bd2:#48484e;
+  --tx:#e6e4de;--t2:#96948e;--t3:#585858;
+  --acc:#e07848;--al:#281808;--ab:#784020;
+  --blue:#58a0e8;--bl:#0c1e38;--bb:#284878;
+  --grn:#48c870;--gl:#0c2018;--gb:#285838;
+  --pur:#9878e0;--pl:#181030;--pb:#483878;
+  --warn:#c8a038;--wl:#201808;--wb:#484018;
+  --red:#e04848;--rl:#200808;--rb:#581818;
+  --sh:0 1px 4px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.04)
+}}
+
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);line-height:1.65;padding:2rem 1rem 5rem}
+.wrap{max-width:840px;margin:0 auto}
+
+/* ── Hero ── */
+.hero{margin-bottom:3rem}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--al);color:var(--acc);border:1px solid var(--ab);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:34px;font-weight:800;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--acc)}
+.hero-lead{font-size:16px;color:var(--t2);max-width:660px;line-height:1.7;margin-bottom:20px}
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap}
+.hero-pill{font-size:12px;color:var(--t3);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:4px 10px}
+
+/* ── TOC ── */
+.toc{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:2.5rem;box-shadow:var(--sh)}
+.toc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:14px}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tl{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--rs);text-decoration:none;color:var(--t2);font-size:14px;transition:background .12s}
+.tl:hover{background:var(--s2);color:var(--tx)}
+.td{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.d-a{background:var(--al);color:var(--acc)}.d-b{background:var(--bl);color:var(--blue)}.d-c{background:var(--gl);color:var(--grn)}.d-d{background:var(--pl);color:var(--pur)}
+
+/* ── Section headers ── */
+.sh{display:flex;align-items:center;gap:14px;margin:3rem 0 1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--bd)}
+.si{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.si-a{background:var(--al)}.si-b{background:var(--bl)}.si-c{background:var(--gl)}.si-d{background:var(--pl)}.si-w{background:var(--wl)}
+.sh h2{font-size:24px;font-weight:800}
+.sh p{font-size:14px;color:var(--t2);margin-top:3px}
+
+/* ── Cards ── */
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:1.25rem;box-shadow:var(--sh)}
+.ct{font-size:16px;font-weight:700;margin-bottom:8px}
+.cb{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:1rem}
+.cb:last-child{margin-bottom:0}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin:1.25rem 0 8px}
+.lbl:first-child{margin-top:0}
+
+/* ── Code ── */
+.code{position:relative;background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:13px 48px 13px 15px;font-family:var(--mono);font-size:13px;line-height:1.8;color:var(--tx);margin-bottom:1rem;overflow-x:auto;white-space:pre}
+.code.nc{padding-right:15px}
+.cm{color:var(--t3)}.kw{color:var(--acc);font-weight:700}.st{color:var(--grn)}.pr{color:var(--blue);font-style:italic}
+.cp{position:absolute;top:8px;right:8px;background:var(--surf);border:1px solid var(--bd);border-radius:5px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--t2);font-family:var(--sans);transition:all .15s}
+.cp:hover{background:var(--acc);color:#fff;border-color:transparent}
+.cp.ok{background:var(--gl);color:var(--grn);border-color:var(--gb)}
+
+/* ── Alerts ── */
+.alert{border-radius:var(--rs);padding:12px 14px;font-size:14px;line-height:1.65;margin-bottom:1rem;border-left:3px solid}
+.al-tip{background:var(--bl);color:var(--blue);border-color:var(--blue)}
+.al-key{background:var(--pl);color:var(--pur);border-color:var(--pur)}
+.al-warn{background:var(--wl);color:var(--warn);border-color:var(--wb)}
+.al-ok{background:var(--gl);color:var(--grn);border-color:var(--grn)}
+.al-danger{background:var(--rl);color:var(--red);border-color:var(--red)}
+.alert code,.cb code{font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.1);border-radius:3px;padding:1px 5px}
+code{font-family:var(--mono);font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:1px 5px}
+
+/* ── File tree ── */
+.tree{background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 16px;font-family:var(--mono);font-size:13px;line-height:1.9;margin-bottom:1rem}
+.fd{color:var(--blue);font-weight:700}.ff{color:var(--tx)}.fc{color:var(--t3)}.fa{color:var(--acc);font-weight:700}.fg{color:var(--grn);font-weight:700}
+
+/* ── Steps ── */
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:16px;padding-bottom:1.5rem}
+.step:last-child{padding-bottom:0}
+.step-l{display:flex;flex-direction:column;align-items:center}
+.step-n{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;background:var(--al);color:var(--acc);border:2px solid var(--ab)}
+.step-line{width:2px;flex:1;background:var(--bd);margin-top:6px}
+.step:last-child .step-line{display:none}
+.step-body{flex:1;padding-top:4px}
+.step-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.step-desc{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:10px}
+
+/* ── Prompt box ── */
+.pb{border:1px solid var(--bd);border-radius:var(--rs);overflow:hidden;margin-bottom:1rem}
+.ph{background:var(--s2);padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--t3);border-bottom:1px solid var(--bd)}
+.pdot{width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.pby{padding:12px 14px;font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--tx);background:var(--surf);white-space:pre-wrap}
+
+/* ── Compare ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.cmp{border-radius:var(--rs);padding:14px;border:1px solid var(--bd)}
+.cmp-old{background:var(--rl);border-color:var(--rb)}.cmp-new{background:var(--gl);border-color:var(--gb)}
+.cmp-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.cmp-old .cmp-lbl{color:var(--red)}.cmp-new .cmp-lbl{color:var(--grn)}
+.cmp ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.cmp li{font-size:13px;color:var(--t2);display:flex;gap:7px;line-height:1.5}
+.cmp-old li::before{content:"✗";color:var(--red);flex-shrink:0}
+.cmp-new li::before{content:"✓";color:var(--grn);flex-shrink:0}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--bd)}
+.tab{padding:7px 16px;font-size:13px;font-weight:600;border:1px solid transparent;border-bottom:none;border-radius:var(--rs) var(--rs) 0 0;cursor:pointer;color:var(--t2);transition:all .12s;background:none;margin-bottom:-1px;position:relative;z-index:1;font-family:var(--sans)}
+.tab:hover{color:var(--tx);background:var(--s2)}
+.tab.on{background:var(--surf);border-color:var(--bd);border-bottom-color:var(--surf);color:var(--tx)}
+.tp{display:none;border:1px solid var(--bd);border-top:none;border-radius:0 0 var(--rs) var(--rs);padding:1.25rem;margin-bottom:1.25rem;background:var(--surf)}
+.tp.on{display:block}
+
+/* ── Grid callouts ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:1.25rem}
+.cbox{background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:13px}
+.cbox-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.cbox-txt{font-size:13px;color:var(--t2);line-height:1.5}
+.cb-a .cbox-lbl{color:var(--acc)}.cb-b .cbox-lbl{color:var(--blue)}.cb-c .cbox-lbl{color:var(--grn)}.cb-d .cbox-lbl{color:var(--pur)}
+
+/* ── Checklist ── */
+.chk{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.chk li{display:flex;gap:10px;font-size:14px;color:var(--t2);line-height:1.55;align-items:flex-start}
+.ico{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
+.ico-ok{background:var(--gl);color:var(--grn);border:1px solid var(--gb)}
+.ico-arr{background:var(--al);color:var(--acc);border:1px solid var(--ab)}
+.ico-warn{background:var(--wl);color:var(--warn);border:1px solid var(--wb)}
+
+/* ── Badge preview ── */
+.badge-preview{background:var(--s3);border:1px solid var(--bd);border-radius:var(--rs);padding:20px;text-align:center;margin-bottom:1rem}
+.badge-btn{display:inline-block;background:#238636;color:#fff;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:600;font-family:var(--sans);border:1px solid rgba(255,255,255,.15)}
+.badge-sub{font-size:12px;color:var(--t3);margin-top:10px}
+
+hr{border:none;border-top:1px solid var(--bd);margin:1.5rem 0}
+.done-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gl);color:var(--grn);border:1px solid var(--gb);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;margin-bottom:1rem}
+.done-badge::before{content:"✓"}
+
+@media(max-width:620px){
+  body{padding:1rem 1rem 3rem}
+  .hero h1{font-size:24px}
+  .toc-grid,.compare{grid-template-columns:1fr}
+  .cgrid{grid-template-columns:1fr}
+  .sh h2{font-size:20px}
+}
+@media print{
+  .cp{display:none}
+  .card,.tree,.code{break-inside:avoid}
+  .tp:not(.on){display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-tag">Claude Code · Node.js · Express · GitHub · Codespaces</div>
+  <h1>Building <span>Node.js / Express</span> Projects<br>with Claude Code</h1>
+  <p class="hero-lead">A complete workflow — from empty directory to a GitHub repo that runs in Codespaces on first open. Covers Claude Code planning with markdown specs, CLAUDE.md project memory, Codespace configuration, and full walkthroughs for both a web app and a REST API.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">Claude Code in your terminal</span>
+    <span class="hero-pill">Develop &amp; test locally</span>
+    <span class="hero-pill">Push to GitHub</span>
+    <span class="hero-pill">Run in Codespaces instantly</span>
+    <span class="hero-pill">Web App + REST API sections</span>
+  </div>
+</div>
+
+<!-- ═══ TOC ════════════════════════════════════════════════════════ -->
+<div class="toc">
+  <div class="toc-title">Contents — 10 sections</div>
+  <div class="toc-grid">
+    <a class="tl" href="#s1"><span class="td d-a">1</span>Why Claude Code beats browser chat</a>
+    <a class="tl" href="#s2"><span class="td d-a">2</span>The planning workflow</a>
+    <a class="tl" href="#s3"><span class="td d-b">3</span>CLAUDE.md — project memory</a>
+    <a class="tl" href="#s4"><span class="td d-b">4</span>Project structure &amp; key files</a>
+    <a class="tl" href="#s5"><span class="td d-b">5</span>Codespace-ready devcontainer</a>
+    <a class="tl" href="#s6"><span class="td d-c">6</span>Web App walkthrough (Express + EJS)</a>
+    <a class="tl" href="#s7"><span class="td d-d">7</span>REST API walkthrough (Express + JSON)</a>
+    <a class="tl" href="#s8"><span class="td d-c">8</span>Push to GitHub with README &amp; badge</a>
+    <a class="tl" href="#s9"><span class="td d-d">9</span>Daily session patterns</a>
+    <a class="tl" href="#s10"><span class="td d-a">10</span>Commands &amp; prompts reference</a>
+  </div>
+</div>
+
+
+<!-- ═══ S1: Why ════════════════════════════════════════════════════ -->
+<div id="s1" class="sh">
+  <div class="si si-a">⇄</div>
+  <div><h2>1 · Why Claude Code beats browser chat</h2>
+  <p>What fundamentally changes when Claude runs in your terminal</p></div>
+</div>
+
+<div class="compare">
+  <div class="cmp cmp-old">
+    <div class="cmp-lbl">Browser Chat (old way)</div>
+    <ul>
+      <li>Copy code in, paste code out manually</li>
+      <li>No knowledge of your project structure</li>
+      <li>Context lost when tab closes</li>
+      <li>One file or snippet at a time</li>
+      <li>Cannot run your server or tests</li>
+      <li>You integrate everything yourself</li>
+      <li>Re-explain conventions every session</li>
+    </ul>
+  </div>
+  <div class="cmp cmp-new">
+    <div class="cmp-lbl">Claude Code (new way)</div>
+    <ul>
+      <li>Reads and writes files directly on disk</li>
+      <li>Sees your entire project tree</li>
+      <li>Persistent memory via CLAUDE.md</li>
+      <li>Multi-file edits in one task</li>
+      <li>Runs npm test, npm run dev, git commands</li>
+      <li>Shows diffs — you approve before any write</li>
+      <li>CLAUDE.md loaded automatically every session</li>
+    </ul>
+  </div>
+</div>
+
+<div class="alert al-key"><strong>Core mental shift:</strong> Stop thinking of Claude as a chatbot you consult. Think of it as a senior developer pair-programming in your terminal — it reads your files, writes code, runs tests, and iterates. You set direction and approve changes.</div>
+
+<div class="card">
+  <div class="ct">Three habits that make the biggest difference</div>
+  <ul class="chk">
+    <li><span class="ico ico-ok">1</span><span><strong>Plan before you code.</strong> Use Plan Mode (Shift+Tab) to explore and design before any file is written. Anthropic's own guidance: "Letting Claude jump straight to coding can produce code that solves the wrong problem."</span></li>
+    <li><span class="ico ico-ok">2</span><span><strong>Write CLAUDE.md for every project.</strong> Claude's persistent memory — your stack, file layout, conventions, and npm scripts. Loads at the start of every session automatically.</span></li>
+    <li><span class="ico ico-ok">3</span><span><strong>Commit after each discrete task.</strong> Ask Claude to commit as it completes tasks. Small, reviewable diffs and clean rollback points make the whole workflow manageable.</span></li>
+  </ul>
+</div>
+
+
+<!-- ═══ S2: Planning ═══════════════════════════════════════════════ -->
+<div id="s2" class="sh">
+  <div class="si si-a">📐</div>
+  <div><h2>2 · The planning workflow</h2>
+  <p>Write markdown specs first — then implement one task at a time</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Why plan first?</div>
+  <div class="cb">The biggest improvement over browser chat is writing a spec before any code is written. When Claude has a written plan to reference, it makes targeted changes, stays consistent across sessions, and produces code that fits your architecture from the start. The workflow produces four sequential markdown files — each feeds the next, and you review each before moving forward.</div>
+</div>
+
+<div class="card">
+  <div class="ct">The four planning documents</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-l"><div class="step-n">1</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">docs/requirements.md — What are we building?</div>
+        <div class="step-desc">User stories, acceptance criteria, scope. Enter Plan Mode first (Shift+Tab) — Claude cannot write code in this mode. It interviews you with clarifying questions, then writes this file.</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Enter Plan Mode (Shift+Tab) then use this prompt</div>
+        <div class="pby">I want to add [feature] to this project. You are in plan
+mode — do not write any code. Ask me clarifying questions
+about requirements, edge cases, and scope. Then write
+docs/requirements.md covering: what it does, who uses it,
+acceptance criteria, and what is out of scope.</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">2</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">docs/design.md — How will we build it?</div>
+        <div class="step-desc">Files to create or modify, data models, route shapes, middleware order. Claude reads requirements.md and your existing code. Still in Plan Mode — blueprint only.</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Still in Plan Mode</div>
+        <div class="pby">Read docs/requirements.md and the current src/ structure.
+Write docs/design.md: which files will be created or changed,
+data models, route shapes or API endpoint definitions,
+and middleware needed. No code — blueprint only.
+Explain your reasoning for key decisions.</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">3</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">docs/tasks.md — In what order?</div>
+        <div class="step-desc">A numbered checkbox list. Each task touches at most 3 files, has a paired test task, and builds on the previous. You reorder or adjust before anything is coded. Each task = one commit.</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Still in Plan Mode</div>
+        <div class="pby">Read docs/design.md. Create docs/tasks.md as a numbered
+checklist. Each task: touches at most 3 files, is independently
+testable, builds on the previous, and has a paired test task.
+Mark every item [ ] (not started).</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">4</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Implement — one task at a time in Normal Mode</div>
+        <div class="step-desc">Exit Plan Mode (Shift+Tab). Claude implements Task 1, runs tests, commits, marks it done — then stops and waits for your review before Task 2.</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Exit Plan Mode first (Shift+Tab back to Normal)</div>
+        <div class="pby">Read CLAUDE.md, docs/design.md, and docs/tasks.md.
+Implement Task 1 only. Run `npm test` after writing.
+Show me the results. If tests pass, mark Task 1 [x],
+commit with a conventional commit message, then stop
+and wait for my review before moving to Task 2.</div></div>
+        <div class="alert al-warn" style="margin-top:8px"><strong>One task at a time.</strong> Never ask Claude to implement the whole list at once. Small, reviewable diffs are the entire point of planning first.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Plan Mode, Normal Mode, Accept All</div>
+  <div class="cgrid">
+    <div class="cbox cb-a"><div class="cbox-lbl">Shift+Tab → Plan Mode ⏸</div><div class="cbox-txt">Read-only. No file writes. Use for all three planning phases.</div></div>
+    <div class="cbox cb-b"><div class="cbox-lbl">Shift+Tab → Normal Mode ▶</div><div class="cbox-txt">Asks permission per file write. Use for implementation. Review each diff before approving.</div></div>
+    <div class="cbox cb-c"><div class="cbox-lbl">Shift+Tab → Accept All ⏵⏵</div><div class="cbox-txt">Auto-approves all writes. Use only for fully mechanical tasks — generating tests, reformatting.</div></div>
+    <div class="cbox cb-d"><div class="cbox-lbl">/clear between tasks</div><div class="cbox-txt">Resets conversation. CLAUDE.md re-reads on next prompt. Use between unrelated tasks.</div></div>
+  </div>
+  <div class="alert al-tip">Context degrades above 70% usage. Use <code>/compact</code> proactively. Point Claude to docs files instead of re-explaining: "Read docs/design.md for the data model."</div>
+</div>
+
+
+<!-- ═══ S3: CLAUDE.md ══════════════════════════════════════════════ -->
+<div id="s3" class="sh">
+  <div class="si si-b">📋</div>
+  <div><h2>3 · CLAUDE.md — project memory</h2>
+  <p>The file Claude reads at the start of every session, automatically</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">What CLAUDE.md is</div>
+  <div class="cb"><code>CLAUDE.md</code> sits at the project root and loads automatically at the start of every Claude Code session. It replaces everything you used to re-explain in browser chat — stack, file layout, conventions, npm scripts, and gotchas. Write it once; use it in every session forever. Keep it under 100 lines — every line costs context.</div>
+</div>
+
+<div class="card">
+  <div class="ct">CLAUDE.md — master template (adapt for every project)</div>
+  <div class="code nc"><span class="cm"># Project: [Name]</span>
+[One sentence: what this app does and who uses it.]
+
+<span class="cm">## Stack</span>
+- Node.js 20 LTS, Express 4.x
+- [Templating: EJS | None — JSON API only]
+- [Database: PostgreSQL via pg | MongoDB via Mongoose]
+- [Auth: express-session + bcrypt | JWT (jsonwebtoken)]
+- Testing: Jest + Supertest
+- Dev tooling: nodemon, ESLint, dotenv
+
+<span class="cm">## Dev Commands</span>
+```
+npm run dev      # nodemon src/server.js  (port 3000)
+npm test         # jest --forceExit
+npm run lint     # eslint src/
+npm run lint:fix # eslint src/ --fix
+```
+
+<span class="cm">## Project Structure</span>
+```
+src/
+  app.js           # Express app — no listen() call here
+  server.js        # Entry point — binds PORT from env
+  routes/          # One file per resource
+  controllers/     # Business logic — routes stay thin
+  middleware/      # asyncHandler.js, errorHandler.js, auth.js
+  models/          # DB models or query functions
+  views/           # EJS templates (web app only)
+  public/          # Static assets (web app only)
+  utils/           # Shared helpers
+tests/             # Mirrors src/ layout
+docs/              # Planning: requirements.md, design.md, tasks.md
+.devcontainer/     # devcontainer.json — Codespace config
+```
+
+<span class="cm">## Coding Standards</span>
+- async/await everywhere — no raw Promises or callbacks
+- Named exports only — no default exports
+- Wrap ALL async route handlers with asyncHandler
+- Validate all req.body inputs before using them
+- Errors: throw new AppError("message", statusCode)
+- HTTP status codes always explicit
+- Secrets via process.env only — never hardcoded
+- Parameterized DB queries — never string interpolation
+
+<span class="cm">## Environment Variables</span>
+See .env.example for all required variables.
+
+<span class="cm">## Commits</span>
+Conventional commits: feat:, fix:, docs:, refactor:, test:, chore:
+Never commit .env. Commit after each completed task.
+
+<span class="cm">## Testing</span>
+Supertest for route integration tests. Mock external services.
+Run npm test before every commit.</div>
+</div>
+
+
+<!-- ═══ S4: Project Structure ══════════════════════════════════════ -->
+<div id="s4" class="sh">
+  <div class="si si-b">🗂</div>
+  <div><h2>4 · Project structure &amp; key files</h2>
+  <p>What lives where, what gets committed, what never does</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Full repo layout</div>
+  <div class="tree"><span class="fd">my-project/</span>
+├── <span class="fa">CLAUDE.md</span>                <span class="fc"># Claude's memory — always commit</span>
+├── <span class="fd">.claude/</span>
+│   ├── <span class="fa">settings.json</span>        <span class="fc"># Tool permissions — commit</span>
+│   └── <span class="fd">commands/</span>            <span class="fc"># Custom slash commands (optional)</span>
+├── <span class="fa">.devcontainer/</span>
+│   └── <span class="fa">devcontainer.json</span>    <span class="fc"># Codespace config — commit</span>
+├── <span class="fd">docs/</span>                    <span class="fc"># Planning docs — commit</span>
+│   ├── requirements.md
+│   ├── design.md
+│   └── tasks.md
+├── <span class="fd">src/</span>                     <span class="fc"># Application code</span>
+├── <span class="fd">tests/</span>
+├── <span class="fa">README.md</span>                <span class="fc"># With Codespace badge — commit</span>
+├── <span class="fa">.env.example</span>             <span class="fc"># Dummy values only — commit</span>
+├── <span class="fg">.env</span>                     <span class="fc"># Real secrets — NEVER commit</span>
+├── <span class="fa">.gitignore</span>               <span class="fc"># Must cover .env — commit</span>
+├── <span class="fa">.claudeignore</span>            <span class="fc"># Keeps context lean (optional)</span>
+└── package.json</div>
+  <div class="alert al-danger"><strong>The golden rule: .env is never committed.</strong> The three files that replace it are: <code>.gitignore</code> (blocks the commit), <code>.env.example</code> (documents what's needed), and GitHub Codespace Secrets (injects values automatically in a Codespace).</div>
+</div>
+
+<div class="card">
+  <div class="ct">.gitignore — generate at scaffold time</div>
+  <div class="cb">Generate this on day one and it rarely changes. The most important entry is <code>.env</code> — everything else is standard Node.js housekeeping.</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code prompt — run during scaffold</div>
+  <div class="pby">Create .gitignore for a Node.js/Express project. Include:
+- node_modules/, npm debug logs, .npm/, .node_repl_history
+- .env and .env.* — add a comment: "# Secrets — NEVER commit"
+- dist/, build/, out/, coverage/, .nyc_output/
+- logs/, *.log, pids/, *.pid
+- .DS_Store, Thumbs.db, Desktop.ini
+- .vscode/settings.json (keep .vscode/extensions.json)
+- .claude/settings.local.json, CLAUDE.local.md</div></div>
+  <div class="lbl">Verify it's working</div>
+  <div class="code">git check-ignore -v .env   <span class="cm"># Should print the matching .gitignore rule</span>
+git status               <span class="cm"># .env must NOT appear here</span><button class="cp" onclick="c(this,'git check-ignore -v .env')">Copy</button></div>
+</div>
+
+<div class="card">
+  <div class="ct">.env.example — draft at scaffold, refresh before every push</div>
+  <div class="cb">Anyone who clones your repo or opens it in a Codespace needs to know which environment variables to set. <code>.env.example</code> is the only documentation for this. Never put real values in it — dummy placeholders and explanatory comments only.</div>
+
+  <div class="lbl">Draft prompt — run during scaffold</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code prompt</div>
+  <div class="pby">Create .env.example with safe dummy values for every
+process.env reference in this project. Add a one-line
+comment above each variable explaining what it does and
+where to get the value. Include a generation command
+for any secrets:
+  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+Group related variables. Confirm .env is in .gitignore
+and .env.example is NOT in .gitignore.</div></div>
+
+  <div class="lbl">Refresh prompt — run before every push to GitHub</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code prompt — run this before git push</div>
+  <div class="pby">Scan every file in src/ for process.env references.
+Compare against .env.example. For any variable in the
+code but missing from .env.example: add it with a dummy
+value and a comment. For any variable in .env.example
+no longer in src/: remove it and tell me what was removed.
+Show me the final .env.example before writing it.</div></div>
+
+  <div class="lbl">What a good .env.example looks like</div>
+  <div class="code nc"><span class="cm"># Server</span>
+<span class="cm"># Port the Express server listens on</span>
+PORT=3000
+<span class="cm"># Use "development" locally, "production" in deploy</span>
+NODE_ENV=development
+
+<span class="cm"># Database</span>
+<span class="cm"># Full PostgreSQL connection string</span>
+DATABASE_URL=postgres://myuser:mypassword@localhost:5432/myapp_dev
+
+<span class="cm"># Authentication</span>
+<span class="cm"># Random 32-char string — generate with:</span>
+<span class="cm"># node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span>
+SESSION_SECRET=replace-with-a-random-32-char-string
+JWT_SECRET=replace-with-a-random-32-char-string</div>
+  <div class="alert al-tip"><strong>Make the refresh a habit.</strong> Every time you add a new <code>process.env.SOMETHING</code>, run the refresh prompt before pushing. It catches every gap automatically.</div>
+</div>
+
+<div class="card">
+  <div class="ct">.claude/settings.json — tool permissions</div>
+  <div class="code"><span class="st">{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)", "Bash(npm test)", "Bash(node *)",
+      "Bash(git status)", "Bash(git diff *)", "Bash(git log *)",
+      "Bash(git add *)", "Bash(git commit *)"
+    ],
+    "deny": [
+      "Read(.env)", "Read(.env.*)", "Bash(rm -rf *)", "Bash(curl *)"
+    ]
+  }
+}</span><button class="cp" onclick="c(this,`{\n  \"permissions\": {\n    \"allow\": [\n      \"Bash(npm run *)\", \"Bash(npm test)\", \"Bash(node *)\",\n      \"Bash(git status)\", \"Bash(git diff *)\", \"Bash(git add *)\", \"Bash(git commit *)\"\n    ],\n    \"deny\": [\n      \"Read(.env)\", \"Read(.env.*)\", \"Bash(rm -rf *)\"\n    ]\n  }\n}`)">Copy</button></div>
+  <div class="alert al-tip">Lets Claude run npm scripts and git commands without interrupting you for permission, while blocking it from reading your secrets or running destructive commands.</div>
+</div>
+
+
+<!-- ═══ S5: devcontainer ═══════════════════════════════════════════ -->
+<div id="s5" class="sh">
+  <div class="si si-b">⬡</div>
+  <div><h2>5 · Codespace-ready devcontainer</h2>
+  <p>The file that makes your repo run in Codespaces on first open</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">How Codespaces uses devcontainer.json</div>
+  <div class="cb">When someone opens your repo in GitHub Codespaces, it looks for <code>.devcontainer/devcontainer.json</code>. That file specifies the container image, VS Code extensions to auto-install, ports to forward, and commands to run after the container builds. Get this right and anyone gets a fully working dev environment — with your app already running — in under a minute.</div>
+  <div class="cgrid">
+    <div class="cbox cb-a"><div class="cbox-lbl">postCreateCommand</div><div class="cbox-txt">Runs once when container is first built. Use for <code>npm install</code>.</div></div>
+    <div class="cbox cb-b"><div class="cbox-lbl">postAttachCommand</div><div class="cbox-txt">Runs when VS Code connects. Use <code>npm run dev</code> to auto-start your server.</div></div>
+    <div class="cbox cb-c"><div class="cbox-lbl">forwardPorts</div><div class="cbox-txt">Port 3000 for your app, 9229 for Node debugger.</div></div>
+    <div class="cbox cb-d"><div class="cbox-lbl">onAutoForward</div><div class="cbox-txt"><code>"openBrowser"</code> for web apps (opens a tab). <code>"notify"</code> for APIs (shows a toast).</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">devcontainer.json — web app (Express + views)</div>
+  <div class="code"><span class="cm">// .devcontainer/devcontainer.json</span>
+<span class="st">{
+  "name": "Express Web App",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "mikestead.dotenv",
+        "christian-kohler.path-intellisense",
+        "PKief.material-icon-theme"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  },
+  "forwardPorts": [3000, 9229],
+  "portsAttributes": {
+    "3000": { "label": "Web App", "onAutoForward": "openBrowser" },
+    "9229": { "label": "Node Debugger", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "npm install",
+  "postAttachCommand": "npm run dev"
+}</span><button class="cp" onclick="c(this,`{\n  \"name\": \"Express Web App\",\n  \"image\": \"mcr.microsoft.com/devcontainers/javascript-node:20\",\n  \"customizations\": { \"vscode\": { \"extensions\": [\"dbaeumer.vscode-eslint\",\"esbenp.prettier-vscode\",\"mikestead.dotenv\"], \"settings\": { \"editor.formatOnSave\": true } } },\n  \"forwardPorts\": [3000, 9229],\n  \"portsAttributes\": {\n    \"3000\": { \"label\": \"Web App\", \"onAutoForward\": \"openBrowser\" },\n    \"9229\": { \"label\": \"Node Debugger\", \"onAutoForward\": \"silent\" }\n  },\n  \"postCreateCommand\": \"npm install\",\n  \"postAttachCommand\": \"npm run dev\"\n}`)">Copy</button></div>
+  <div class="alert al-tip"><code>postAttachCommand: "npm run dev"</code> is the magic line. When the Codespace opens, your server starts and a browser tab opens to port 3000 automatically — no terminal commands needed.</div>
+</div>
+
+<div class="card">
+  <div class="ct">devcontainer.json — REST API (JSON only)</div>
+  <div class="code"><span class="cm">// .devcontainer/devcontainer.json</span>
+<span class="st">{
+  "name": "Express REST API",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "mikestead.dotenv",
+        "humao.rest-client",
+        "PKief.material-icon-theme"
+      ],
+      "settings": { "editor.formatOnSave": true }
+    }
+  },
+  "forwardPorts": [3000, 9229],
+  "portsAttributes": {
+    "3000": { "label": "REST API", "onAutoForward": "notify" },
+    "9229": { "label": "Node Debugger", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "npm install",
+  "postAttachCommand": "npm run dev"
+}</span><button class="cp" onclick="c(this,`{\n  \"name\": \"Express REST API\",\n  \"image\": \"mcr.microsoft.com/devcontainers/javascript-node:20\",\n  \"customizations\": { \"vscode\": { \"extensions\": [\"dbaeumer.vscode-eslint\",\"esbenp.prettier-vscode\",\"mikestead.dotenv\",\"humao.rest-client\"], \"settings\": { \"editor.formatOnSave\": true } } },\n  \"forwardPorts\": [3000, 9229],\n  \"portsAttributes\": {\n    \"3000\": { \"label\": \"REST API\", \"onAutoForward\": \"notify\" },\n    \"9229\": { \"label\": \"Node Debugger\", \"onAutoForward\": \"silent\" }\n  },\n  \"postCreateCommand\": \"npm install\",\n  \"postAttachCommand\": \"npm run dev\"\n}`)">Copy</button></div>
+  <div class="alert al-tip">For APIs use <code>"notify"</code> not <code>"openBrowser"</code> — a toast with the forwarded URL is more useful than a browser tab opening to a raw JSON endpoint. The REST Client extension lets you send requests from <code>.http</code> files directly in VS Code.</div>
+</div>
+
+
+<!-- ═══ S6: Web App ════════════════════════════════════════════════ -->
+<div id="s6" class="sh">
+  <div class="si si-c">🌐</div>
+  <div><h2>6 · Web App walkthrough (Express + EJS)</h2>
+  <p>From empty directory to locally tested, push-ready web app</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Phase 0 — Scaffold the entire project</div>
+  <div class="cb">One prompt stands up the full project structure — folders, dependencies, CLAUDE.md, .gitignore, .env.example, and the devcontainer config.</div>
+  <div class="lbl">Initialize</div>
+  <div class="code">mkdir my-webapp && cd my-webapp
+git init && npm init -y
+claude<button class="cp" onclick="c(this,'mkdir my-webapp && cd my-webapp\ngit init && npm init -y\nclaude')">Copy</button></div>
+
+  <div class="lbl">Scaffold prompt — paste into Claude Code</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code — full scaffold prompt for a web app</div>
+  <div class="pby">Scaffold a Node.js/Express web app with server-rendered EJS views.
+
+Stack: Node.js 20, Express 4, EJS, express-session, bcrypt,
+express-validator, dotenv, nodemon (dev), Jest + Supertest (dev),
+ESLint (dev).
+
+Do all of the following:
+1. Run npm install
+2. Create project structure:
+   src/app.js                  – Express app, no listen()
+   src/server.js               – Entry point, reads PORT from env
+   src/routes/index.js         – GET / returns home view
+   src/controllers/homeController.js
+   src/middleware/asyncHandler.js
+   src/middleware/errorHandler.js
+   src/views/index.ejs
+   src/views/partials/header.ejs
+   src/views/partials/footer.ejs
+   src/public/css/style.css
+   tests/.gitkeep
+   docs/.gitkeep
+3. Add npm scripts: dev (nodemon src/server.js), test
+   (jest --forceExit), lint (eslint src/)
+4. Create .gitignore — include node_modules, .env and .env.*
+   (with comment "# Secrets — NEVER commit"), dist, coverage,
+   logs, .DS_Store, .vscode/settings.json,
+   .claude/settings.local.json
+5. Create .env.example with safe dummy values for: PORT,
+   NODE_ENV, SESSION_SECRET. Add a generation command comment
+   for SESSION_SECRET. Confirm .env.example is NOT gitignored.
+6. Create .devcontainer/devcontainer.json — Node 20 image,
+   forward port 3000 with onAutoForward openBrowser, port 9229
+   silent, postCreateCommand "npm install",
+   postAttachCommand "npm run dev"
+7. Create CLAUDE.md — stack, commands, structure, conventions
+8. Make GET / return a working EJS page with full layout
+
+Do NOT create README.md — that requires the GitHub repo URL
+and will be generated separately after the first push.
+
+Conventions: async/await, named exports, asyncHandler wraps
+all async route handlers, throw new AppError not try/catch,
+all config from process.env.</div></div>
+
+  <div class="alert al-ok" style="margin-top:.5rem">After scaffold: run <code>npm run dev</code>, verify port 3000 loads, then: <code>git add -A && git commit -m "chore: initial scaffold"</code></div>
+</div>
+
+<div class="card">
+  <div class="ct">CLAUDE.md for a web app — full template</div>
+  <div class="code nc"><span class="cm"># Project: My Web App</span>
+Express web app with EJS server-rendered views.
+
+<span class="cm">## Stack</span>
+Node.js 20, Express 4, EJS, express-session, bcrypt,
+express-validator, Jest + Supertest, nodemon, ESLint
+
+<span class="cm">## Commands</span>
+npm run dev  → nodemon src/server.js (port 3000)
+npm test     → jest --forceExit
+npm run lint → eslint src/
+
+<span class="cm">## Route Convention</span>
+src/routes/index.js     → GET /
+src/routes/auth.js      → /login /logout /register
+src/routes/dashboard.js → /dashboard (protected)
+Routes call controllers. Controllers do the work.
+
+<span class="cm">## View Convention</span>
+All views in src/views/. Partials in src/views/partials/.
+Always pass { title, user } to res.render().
+Flash messages via connect-flash.
+
+<span class="cm">## Auth</span>
+requireAuth in src/middleware/auth.js. Session-based.
+req.user set by middleware, not routes.
+Passwords hashed with bcrypt (10 rounds).
+
+<span class="cm">## Error Handling</span>
+asyncHandler wraps all async route handlers.
+throw new AppError("msg", statusCode). Never try/catch in routes.
+Global errorHandler last in app.js.
+
+<span class="cm">## Standards</span>
+async/await. Named exports. Validate req.body before use.
+next(err) always. All config from process.env.</div>
+</div>
+
+<div class="card">
+  <div class="ct">Adding a feature — full spec workflow example (auth)</div>
+  <div class="lbl">Requirements (Plan Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Shift+Tab → Plan Mode</div>
+  <div class="pby">I want to add user authentication: register, login, logout.
+Read src/ and CLAUDE.md. Ask me clarifying questions about:
+registration fields, login flow, session handling, which
+pages are protected, password requirements.
+Write docs/auth-requirements.md. No code.</div></div>
+
+  <div class="lbl">Design (Plan Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Still Plan Mode</div>
+  <div class="pby">Read docs/auth-requirements.md and the current project.
+Write docs/auth-design.md: files to create (routes/auth.js,
+controllers/authController.js, middleware/requireAuth.js,
+models/User.js, views/login.ejs, views/register.ejs),
+users table SQL schema, session config, bcrypt approach.
+No code.</div></div>
+
+  <div class="lbl">Tasks (Plan Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Still Plan Mode</div>
+  <div class="pby">Read docs/auth-design.md. Create docs/auth-tasks.md.
+Numbered checklist, each task touches at most 3 files,
+has a paired test task, builds on the previous. Mark all [ ].</div></div>
+
+  <div class="lbl">Implement (Normal Mode — one task at a time)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Shift+Tab back to Normal Mode</div>
+  <div class="pby">Read CLAUDE.md, docs/auth-design.md, docs/auth-tasks.md.
+Implement Task 1 only. Run `npm test`. If passing, mark
+Task 1 [x], commit "feat(auth): [description]", stop and
+wait for my review before Task 2.</div></div>
+</div>
+
+<div class="card">
+  <div class="ct">Common web app prompts</div>
+  <ul class="chk">
+    <li><span class="ico ico-arr">→</span><span><strong>New page:</strong> "Add GET /profile. Protected by requireAuth. Renders src/views/profile.ejs with the current user. Follow the pattern in homeController.js."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Form POST:</strong> "Add POST /profile/edit. Validate body with express-validator. Update user in DB. Redirect with flash success message on success."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Tests:</strong> "Write Supertest tests for all routes in routes/auth.js — success cases, 400 validation errors, 401 unauthenticated. Run npm test after."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Debug:</strong> "[paste stack trace] — read relevant files first. Tell me the root cause. Propose a fix. Wait for my approval before touching any files."</span></li>
+  </ul>
+</div>
+
+
+<!-- ═══ S7: REST API ═══════════════════════════════════════════════ -->
+<div id="s7" class="sh">
+  <div class="si si-d">⚡</div>
+  <div><h2>7 · REST API walkthrough (Express + JSON)</h2>
+  <p>JSON-only API with JWT auth — locally tested and push-ready</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Phase 0 — Scaffold the API</div>
+  <div class="code">mkdir my-api && cd my-api
+git init && npm init -y
+claude<button class="cp" onclick="c(this,'mkdir my-api && cd my-api\ngit init && npm init -y\nclaude')">Copy</button></div>
+
+  <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code — full scaffold prompt for a REST API</div>
+  <div class="pby">Scaffold a JSON REST API with Express. No views. All responses JSON.
+
+Stack: Node.js 20, Express 4, jsonwebtoken,
+express-validator, dotenv, nodemon (dev), Jest + Supertest (dev),
+ESLint (dev).
+
+Do all of the following:
+1. Run npm install
+2. Create project structure:
+   src/app.js                    – Express app, no listen()
+   src/server.js                 – Entry point, binds PORT
+   src/routes/index.js           – Mounts all route files
+   src/routes/health.js          – GET /health → { status:"ok" }
+   src/controllers/              – Empty, ready for resources
+   src/middleware/asyncHandler.js – Wraps async handlers
+   src/middleware/errorHandler.js – Global JSON error handler
+   src/middleware/auth.js        – verifyToken JWT middleware
+   src/middleware/validate.js    – Runs validationResult, 400 on fail
+   src/utils/AppError.js         – new AppError("msg", statusCode)
+   tests/.gitkeep
+   docs/.gitkeep
+3. npm scripts: dev (nodemon), test (jest --forceExit
+   --detectOpenHandles), lint (eslint src/)
+4. Create .gitignore — node_modules, .env and .env.*
+   (with comment "# Secrets — NEVER commit"), dist, coverage,
+   logs, .DS_Store, .vscode/settings.json,
+   .claude/settings.local.json
+5. Create .env.example with: PORT=3000, NODE_ENV=development,
+   JWT_SECRET=replace-with-random-string (include generation
+   command comment). Confirm .env.example is NOT gitignored.
+6. Create .devcontainer/devcontainer.json — Node 20 image,
+   port 3000 with onAutoForward notify, port 9229 silent,
+   postCreateCommand "npm install", postAttachCommand "npm run dev"
+7. Create CLAUDE.md for this API project
+8. GET /health must return { "status": "ok" } with 200
+
+All responses: { "data":{}, "meta":{} } success,
+{ "error":"msg", "details":[] } error.
+async/await. Named exports. asyncHandler always.
+AppError for all errors. Status codes always explicit.
+
+Do NOT create README.md — will be generated after GitHub push.</div></div>
+
+  <div class="alert al-ok" style="margin-top:.5rem">After scaffold: <code>npm run dev</code>, then in another terminal: <code>curl http://localhost:3000/health</code> — should return <code>{"status":"ok"}</code></div>
+</div>
+
+<div class="card">
+  <div class="ct">CLAUDE.md for a REST API — full template</div>
+  <div class="code nc"><span class="cm"># Project: My REST API</span>
+JSON REST API. No views. Every response is JSON.
+
+<span class="cm">## Stack</span>
+Node.js 20, Express 4, jsonwebtoken, express-validator,
+dotenv, nodemon, Jest + Supertest, ESLint
+
+<span class="cm">## Commands</span>
+npm run dev  → nodemon src/server.js (port 3000)
+npm test     → jest --forceExit --detectOpenHandles
+npm run lint → eslint src/
+
+<span class="cm">## API Conventions</span>
+Base path: /api/v1/
+Resources: plural nouns (/users, /posts, /items)
+Status codes:
+  200 OK | 201 Created | 204 No Content (DELETE)
+  400 Bad Request | 401 Unauthenticated | 403 Forbidden
+  404 Not Found | 409 Conflict | 500 Internal Server Error
+Success: { "data": {}, "meta": {} }
+Error:   { "error": "message", "details": [] }
+
+<span class="cm">## Auth</span>
+Bearer JWT in Authorization header.
+verifyToken in middleware/auth.js attaches req.user.
+Role checks in controllers. Public routes mounted before
+verifyToken in app.js.
+
+<span class="cm">## Validation</span>
+express-validator chains defined in same file as route.
+validate.js runs validationResult, returns 400 if invalid.
+
+<span class="cm">## Error Handling</span>
+throw new AppError("msg", statusCode). asyncHandler always.
+Global errorHandler last in app.js. Never res.json in catch.
+
+<span class="cm">## Standards</span>
+async/await. Named exports. Parameterized DB queries.
+All config from process.env.</div>
+</div>
+
+<div class="card">
+  <div class="ct">Adding a CRUD resource — spec workflow example</div>
+  <div class="lbl">Design (Plan Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Plan Mode</div>
+  <div class="pby">Read CLAUDE.md. I want to add a Posts resource (full CRUD).
+Write docs/posts-design.md: database schema, all endpoints
+(method, path, auth, request body, success response, error
+cases), files to create (routes/posts.js, controllers/
+postsController.js, models/Post.js), validation rules,
+pagination approach for GET /api/v1/posts. No code.</div></div>
+
+  <div class="lbl">Tasks (Plan Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Plan Mode</div>
+  <div class="pby">Read docs/posts-design.md. Create docs/posts-tasks.md.
+Order: model first, then each endpoint, then integration tests.
+Each task: at most 3 files, independently testable. Mark all [ ].</div></div>
+
+  <div class="lbl">Implement (Normal Mode)</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Normal Mode</div>
+  <div class="pby">Read CLAUDE.md, docs/posts-design.md, docs/posts-tasks.md.
+Implement Task 1 only. Run `npm test`. If passing, mark
+Task 1 [x], commit "feat(posts): add Post model", stop and
+wait for review before Task 2.</div></div>
+</div>
+
+<div class="card">
+  <div class="ct">Common REST API prompts</div>
+  <ul class="chk">
+    <li><span class="ico ico-arr">→</span><span><strong>New endpoint:</strong> "Add GET /api/v1/posts/:id. Follow postsController.js pattern. Return 404 with AppError if not found. Write a Supertest test."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Pagination:</strong> "Add offset pagination to GET /api/v1/posts. Accept ?page and ?limit. Response: { data, meta: { total, page, limit, totalPages } }."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Rate limiting:</strong> "Add express-rate-limit to POST /api/v1/auth/login — max 5 requests per 15 min per IP. Install the package too."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>OpenAPI spec:</strong> "Read src/routes/ and src/controllers/. Generate docs/openapi.yaml documenting all endpoints. OpenAPI 3.0 format."</span></li>
+    <li><span class="ico ico-arr">→</span><span><strong>Security review:</strong> "Review src/ for: unhandled async errors, missing auth on sensitive routes, injection risks. List issues by severity. Do not fix yet."</span></li>
+  </ul>
+</div>
+
+
+<!-- ═══ S8: Push to GitHub ═════════════════════════════════════════ -->
+<div id="s8" class="sh">
+  <div class="si si-w">🚀</div>
+  <div><h2>8 · Push to GitHub with README &amp; Codespace badge</h2>
+  <p>Why README comes last, how the badge works, and the pre-push checklist</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Why README.md is generated after the push</div>
+  <div class="cb">The "Open in GitHub Codespaces" badge URL contains your GitHub username and repo name — so it can only be correct after the repo exists on GitHub. Generating the README locally before pushing means the badge URL will be wrong or use placeholder text. The correct sequence is: finish local dev and testing → push to GitHub → generate README.</div>
+  <div class="alert al-key">This is the one file that intentionally comes last. Everything else — .gitignore, .env.example, devcontainer.json, CLAUDE.md — is generated at scaffold time.</div>
+</div>
+
+<div class="card">
+  <div class="ct">The Codespace badge — how it works</div>
+  <div class="cb">The badge is a standard markdown image linked to <code>https://codespaces.new/OWNER/REPO</code>. GitHub resolves that URL to your repo's Codespace creation page. Anyone can spin up a Codespace in one click.</div>
+
+  <div class="lbl">Badge markdown — replace OWNER and REPO</div>
+  <div class="code">[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/OWNER/REPO?quickstart=1)<button class="cp" onclick="c(this,'[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/OWNER/REPO?quickstart=1)')">Copy</button></div>
+
+  <div class="badge-preview">
+    <span class="badge-btn">Open in GitHub Codespaces</span>
+    <div class="badge-sub">How it renders in a GitHub README</div>
+  </div>
+
+  <div class="alert al-tip"><strong>Always use <code>?quickstart=1</code>.</strong> This shows a "Resume codespace" page if the user already has one open for this repo — rather than always creating a new one. Better UX for everyone.</div>
+</div>
+
+<div class="card">
+  <div class="ct">Step-by-step: finish locally, push, generate README</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-l"><div class="step-n">1</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Run the pre-push audit</div>
+        <div class="step-desc">Before touching git, run this prompt to catch any issues:</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code — pre-push audit prompt</div>
+        <div class="pby">Before I push to GitHub, audit the repo:
+1. .gitignore exists and .env is explicitly listed
+2. .env is NOT tracked by git (run: git ls-files .env)
+3. .env.example has an entry for every process.env in src/
+4. No actual secrets in .env.example — dummy values only
+5. .devcontainer/devcontainer.json exists with correct image,
+   ports, postCreateCommand, postAttachCommand
+6. CLAUDE.md is accurate and current
+7. package.json has dev, test, and lint scripts
+8. npm test passes
+
+Report any issues and fix them before I push.</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">2</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Create the GitHub repo and push</div>
+        <div class="code"><span class="cm"># Option A — GitHub CLI (recommended)</span>
+gh repo create my-webapp --public --source=. --remote=origin --push
+
+<span class="cm"># Option B — manual</span>
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main<button class="cp" onclick="c(this,'gh repo create my-webapp --public --source=. --remote=origin --push')">Copy</button></div>
+        <div class="alert al-tip" style="margin-top:6px">Install GitHub CLI with <code>brew install gh</code> (Mac) or from cli.github.com. Run <code>gh auth login</code> once. The one-liner above creates the repo, sets the remote, and pushes.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">3</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Generate README.md with the Codespace badge</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Claude Code — README generation prompt (run after push)</div>
+        <div class="pby">Read CLAUDE.md, .env.example, src/, and docs/ to understand
+this project. Then create README.md.
+
+My GitHub username is: YOUR_USERNAME
+My repo name is:       YOUR_REPO_NAME
+
+Include in this order:
+1. Project title and one-paragraph description
+2. Codespace badge — use this exact markdown:
+   [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/YOUR_USERNAME/YOUR_REPO_NAME?quickstart=1)
+3. Tech stack (bullet list)
+4. Local development:
+   - Prerequisites (Node.js version)
+   - git clone, npm install, cp .env.example .env,
+     fill in .env values, npm run dev, open localhost:3000
+5. Running in GitHub Codespaces:
+   - Click the badge above
+   - Codespace auto-runs npm install and npm run dev
+   - Port 3000 is forwarded automatically
+   - For secrets: set GitHub Codespace Secrets at
+     https://github.com/settings/codespaces
+     and list which ones this project needs
+6. Environment variables table:
+   | Variable | Required | Description | Example |
+   One row per variable from .env.example
+7. npm scripts table: command, description
+8. Project structure (top-level dirs only)
+9. Routes or API endpoints (read from src/routes/)
+10. Running tests: npm test
+
+Tone: concise and practical. No marketing language.
+Consistent heading hierarchy (# ## ###).</div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">4</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Commit and push the README</div>
+        <div class="code">git add README.md
+git commit -m "docs: add README with Codespace badge"
+git push<button class="cp" onclick="c(this,'git add README.md\ngit commit -m "docs: add README with Codespace badge"\ngit push')">Copy</button></div>
+        <div class="step-desc">After pushing, open your repo on GitHub, confirm the badge renders, and click it — verify it takes you to a Codespace creation page for your repo.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">5</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Set GitHub Codespace Secrets</div>
+        <div class="step-desc">For any sensitive variables (DATABASE_URL, SESSION_SECRET, JWT_SECRET), set them as Codespace Secrets so they inject automatically into every Codespace you open — no manual .env copying needed.</div>
+        <div class="cb" style="margin-bottom:0">Go to: <strong>github.com → Settings → Codespaces → Secrets → New secret</strong>. Set one secret per sensitive variable. For repo-scoped secrets: <strong>your repo → Settings → Secrets and variables → Codespaces</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">What a complete README looks like</div>
+  <div class="code nc"><span class="kw"># My Express App</span>
+
+Brief description of what this project does and who it's for.
+
+<span class="kw">## Open in GitHub Codespaces</span>
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/OWNER/REPO?quickstart=1)
+
+Click the button to open in a cloud dev environment.
+Dependencies install automatically and the server starts on port 3000.
+
+<span class="kw">## Tech Stack</span>
+- Node.js 20, Express 4, EJS
+- express-session, bcrypt, express-validator
+- Jest + Supertest
+
+<span class="kw">## Local Development</span>
+
+Prerequisites: Node.js 20+, npm 9+
+
+```bash
+git clone https://github.com/OWNER/REPO.git
+cd REPO
+npm install
+cp .env.example .env   # then fill in the values
+npm run dev            # starts on http://localhost:3000
+```
+
+<span class="kw">## Running in GitHub Codespaces</span>
+
+1. Click the badge above (or Code → Codespaces → New)
+2. npm install runs automatically
+3. npm run dev starts automatically  
+4. Port 3000 opens in a browser tab
+
+**Before opening a Codespace**, set these secrets at
+https://github.com/settings/codespaces:
+- `SESSION_SECRET` — random 32-char string
+- `DATABASE_URL` — your database connection string
+
+<span class="kw">## Environment Variables</span>
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| PORT | No | Server port | 3000 |
+| NODE_ENV | No | Environment | development |
+| DATABASE_URL | Yes | DB connection | postgres://... |
+| SESSION_SECRET | Yes | Session signing key | (random string) |
+
+Generate secrets: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
+<span class="kw">## Scripts</span>
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with nodemon |
+| `npm test` | Run Jest test suite |
+| `npm run lint` | Run ESLint |
+
+<span class="kw">## Project Structure</span>
+```
+src/          Application source
+tests/        Jest + Supertest tests
+docs/         Planning docs (requirements, design, tasks)
+.devcontainer Codespace configuration
+```
+
+<span class="kw">## Routes</span>
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | / | No | Home page |
+| POST | /login | No | Authenticate |
+| GET | /dashboard | Yes | Protected view |</div>
+</div>
+
+
+<!-- ═══ S9: Daily workflow ═════════════════════════════════════════ -->
+<div id="s9" class="sh">
+  <div class="si si-c">🔄</div>
+  <div><h2>9 · Daily session patterns</h2>
+  <p>How to open, run, and close a productive Claude Code session</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Opening a session</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-l"><div class="step-n">1</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Launch Claude Code</div>
+        <div class="code">cd my-project && claude<button class="cp" onclick="c(this,'cd my-project && claude')">Copy</button></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">2</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Orient Claude to where you left off</div>
+        <div class="pb"><div class="ph"><span class="pdot"></span>Session opener</div>
+        <div class="pby">Read CLAUDE.md and docs/tasks.md. Summarize which tasks
+are [x] complete, which is next [ ], and any blockers
+you can see in the code. Then we'll pick up from there.</div></div>
+        <div class="step-desc">Claude reads the task list and gives a status update. No re-explaining needed — this is the whole point of CLAUDE.md and the planning docs.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-l"><div class="step-n">3</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Work task-by-task or address a bug</div>
+        <div class="step-desc">"Implement the next unchecked task in tasks.md" — or pivot to a bug by pasting the full stack trace and asking Claude to diagnose before fixing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Git workflow during a session</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Ask Claude to propose a commit message</div>
+  <div class="pby">Task 3 is complete and tests pass. Review the changed
+files with `git diff`, then propose a conventional commit
+message. Show me the message — don't commit until I approve.</div></div>
+  <div class="lbl">Or commit yourself</div>
+  <div class="code">git add -p                    <span class="cm"># Review changes interactively</span>
+git commit -m "feat(auth): add requireAuth middleware"
+git push<button class="cp" onclick="c(this,'git add -p\ngit commit -m "feat(auth): add requireAuth middleware"\ngit push')">Copy</button></div>
+  <div class="alert al-warn"><strong>Always review before committing.</strong> Claude Code writes directly to disk. Run <code>git diff</code> or <code>git add -p</code> so you see exactly what changed.</div>
+</div>
+
+<div class="card">
+  <div class="ct">Debugging pattern</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Diagnose before fix — always</div>
+  <div class="pby">POST /api/v1/posts returns 500. Stack trace:
+[paste full stack trace]
+
+Expected: 201 with the created post.
+Actual: 500 Internal Server Error.
+
+Read the relevant source files first. Tell me the root
+cause and why. Then propose a fix — wait for my approval
+before changing any files.</div></div>
+  <div class="alert al-tip">The "diagnose before fixing" pattern catches cases where Claude's first instinct is wrong. You can redirect before any file changes.</div>
+</div>
+
+<div class="card">
+  <div class="ct">Context management</div>
+  <div class="cgrid">
+    <div class="cbox cb-a"><div class="cbox-lbl">/compact at 70%</div><div class="cbox-txt">Compresses conversation to free space. Use proactively — quality degrades noticeably above 70%.</div></div>
+    <div class="cbox cb-b"><div class="cbox-lbl">/clear between tasks</div><div class="cbox-txt">Full reset. CLAUDE.md re-reads on next message. Best between unrelated tasks or after long debugging sessions.</div></div>
+    <div class="cbox cb-c"><div class="cbox-lbl">Point to docs</div><div class="cbox-txt">"Read docs/design.md" costs far less context than pasting the content into the chat yourself.</div></div>
+    <div class="cbox cb-d"><div class="cbox-lbl">.claudeignore</div><div class="cbox-txt">Like .gitignore for Claude's context. Exclude node_modules, dist, coverage, *.min.js, large generated files.</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Keeping CLAUDE.md current</div>
+  <div class="pb"><div class="ph"><span class="pdot"></span>Run this after significant feature additions</div>
+  <div class="pby">We've added features since CLAUDE.md was last updated.
+Read the current codebase and compare against CLAUDE.md.
+Update CLAUDE.md to reflect: new dependencies, changed
+folder structure, new environment variables, evolved
+conventions. Keep it under 100 lines.</div></div>
+  <div class="alert al-key">Update CLAUDE.md whenever you add a dependency, env variable, change folder structure, or change a convention. It's the one file that makes every future session better.</div>
+</div>
+
+
+<!-- ═══ S10: Reference ═════════════════════════════════════════════ -->
+<div id="s10" class="sh">
+  <div class="si si-d">⌨</div>
+  <div><h2>10 · Commands &amp; prompts reference</h2>
+  <p>Everything at a glance</p></div>
+</div>
+
+<div class="card">
+  <div class="ct">Slash commands &amp; keyboard shortcuts</div>
+  <div class="tabs" id="cmd-tabs">
+    <div class="tab on" onclick="T('cmd','session')">Session</div>
+    <div class="tab" onclick="T('cmd','modes')">Modes</div>
+    <div class="tab" onclick="T('cmd','keys')">Keyboard</div>
+  </div>
+  <div class="tp on" id="cmd-session">
+    <div class="code nc">/clear          <span class="cm"># Reset conversation — CLAUDE.md re-reads next prompt</span>
+/compact        <span class="cm"># Compress conversation to free context window</span>
+/context        <span class="cm"># Show currently loaded files and context</span>
+/plan           <span class="cm"># Ask Claude to outline approach before coding</span>
+/help           <span class="cm"># All commands and shortcuts</span>
+/login          <span class="cm"># Switch accounts or re-authenticate</span>
+/doctor         <span class="cm"># Health check — green ticks = all good</span>
+/model          <span class="cm"># Switch between Sonnet 4.6 and Opus 4.6</span></div>
+  </div>
+  <div class="tp" id="cmd-modes">
+    <div class="code nc">Shift+Tab        <span class="cm"># Cycle: Normal → Accept All → Plan Mode → Normal</span>
+
+Plan Mode   ⏸   <span class="cm"># Read-only. No file writes. Use for planning phases.</span>
+Normal Mode ▶   <span class="cm"># Asks permission per write. Use for implementation.</span>
+Accept All  ⏵⏵  <span class="cm"># Auto-approves writes. Only for mechanical tasks.</span>
+
+<span class="cm"># Start a new session already in Plan Mode:</span>
+claude --permission-mode plan
+
+<span class="cm"># Sonnet 4.6 for ~80%: bugs, new routes, tests, features</span>
+<span class="cm"># Opus 4.6 for the hard 20%: architecture, big refactors,</span>
+<span class="cm">#   writing initial CLAUDE.md and spec documents</span></div>
+  </div>
+  <div class="tp" id="cmd-keys">
+    <div class="code nc">Tab        <span class="cm"># Autocomplete commands and file paths</span>
+↑ / ↓      <span class="cm"># Navigate prompt history</span>
+Ctrl+C     <span class="cm"># Cancel current operation</span>
+Ctrl+L     <span class="cm"># Clear terminal screen (context preserved)</span>
+Ctrl+G     <span class="cm"># Open current plan in editor for direct editing</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Power prompts by stage</div>
+  <div class="tabs" id="pp-tabs">
+    <div class="tab on" onclick="T('pp','explore')">Explore</div>
+    <div class="tab" onclick="T('pp','build')">Build</div>
+    <div class="tab" onclick="T('pp','test')">Test &amp; Debug</div>
+    <div class="tab" onclick="T('pp','review')">Review &amp; Ship</div>
+  </div>
+  <div class="tp on" id="pp-explore">
+    <div class="code nc"><span class="pr">&gt; What does this project do? Map the request lifecycle
+  from HTTP request through middleware to response.</span>
+
+<span class="pr">&gt; List all routes across routes/ with method, path,
+  auth requirement, and which controller handles each.</span>
+
+<span class="pr">&gt; Which files would I change to add a new resource?
+  Show me the pattern from an existing one.</span>
+
+<span class="pr">&gt; Read package.json — which dependencies look outdated
+  or have known vulnerabilities?</span></div>
+  </div>
+  <div class="tp" id="pp-build">
+    <div class="code nc"><span class="pr">&gt; Add [feature] following the pattern in [existing file].
+  Validate all inputs. Handle all error cases.
+  Write a test alongside the implementation.</span>
+
+<span class="pr">&gt; Refactor [file] to follow CLAUDE.md conventions.
+  Don't change behavior — structure only. Show me
+  the diff before writing anything to disk.</span>
+
+<span class="pr">&gt; Add express-validator validation to every POST and
+  PUT route in routes/posts.js. Follow the pattern
+  in routes/auth.js.</span></div>
+  </div>
+  <div class="tp" id="pp-test">
+    <div class="code nc"><span class="pr">&gt; Write Supertest tests for routes/posts.js. Cover:
+  200/201 success, 400 validation error, 401
+  unauthenticated, 404 not found. Run npm test after.</span>
+
+<span class="pr">&gt; [paste stack trace] — read the relevant source files
+  first. Tell me the root cause. Propose a fix.
+  Wait for approval before touching any files.</span>
+
+<span class="pr">&gt; The test "POST /api/v1/posts returns 201" is failing:
+  [paste jest output]. Fix only the failing test.
+  Do not change unrelated files.</span></div>
+  </div>
+  <div class="tp" id="pp-review">
+    <div class="code nc"><span class="pr">&gt; Review src/controllers/ for: unhandled async errors,
+  missing validation, injection risks, endpoints missing
+  auth. Prioritize by severity. List only — don't fix.</span>
+
+<span class="pr">&gt; Before I commit: run `git diff` and tell me if
+  anything looks wrong or conflicts with CLAUDE.md.</span>
+
+<span class="pr">&gt; Scan src/ for all process.env references. Compare
+  against .env.example. Add any missing variables with
+  dummy values and comments. Remove any stale ones.</span>
+
+<span class="pr">&gt; Read CLAUDE.md, .env.example, src/, docs/ and generate
+  README.md. My GitHub username: X. Repo name: Y.
+  Include the Codespace badge, local setup, env table,
+  scripts table, and routes list.</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">The complete project cheat sheet</div>
+  <div class="code nc"><span class="cm">── Generated at scaffold time ─────────────────────────────</span>
+<span class="kw">CLAUDE.md</span>              <span class="cm"># Project memory — loaded every session</span>
+<span class="kw">.gitignore</span>             <span class="cm"># Blocks .env from ever being committed</span>
+<span class="kw">.env.example</span>           <span class="cm"># Variable names + dummy values — always commit</span>
+<span class="kw">.devcontainer/</span>         <span class="cm"># devcontainer.json — makes repo Codespace-ready</span>
+<span class="kw">.claude/settings.json</span>  <span class="cm"># Tool allow/deny list</span>
+<span class="kw">docs/</span>                  <span class="cm"># Planning docs (requirements, design, tasks)</span>
+
+<span class="cm">── Refreshed before each push ─────────────────────────────</span>
+<span class="kw">.env.example</span>           <span class="cm"># Rescan src/ for new process.env references</span>
+
+<span class="cm">── Generated after first push (needs repo URL) ────────────</span>
+<span class="kw">README.md</span>              <span class="cm"># With Open in GitHub Codespaces badge</span>
+
+<span class="cm">── Never committed ────────────────────────────────────────</span>
+<span class="kw">.env</span>                   <span class="cm"># Real secrets — use GitHub Codespace Secrets instead</span></div>
+
+  <ul class="chk" style="margin-top:1.25rem">
+    <li><span class="ico ico-ok">✓</span><span>Use the scaffold prompt in S6 or S7 — it generates .gitignore, .env.example, devcontainer.json, and CLAUDE.md in one shot</span></li>
+    <li><span class="ico ico-ok">✓</span><span>Run the pre-push audit prompt (S8 Step 1) before every first push to a new repo</span></li>
+    <li><span class="ico ico-ok">✓</span><span>Run the .env.example refresh prompt before every push after adding features with new env variables</span></li>
+    <li><span class="ico ico-ok">✓</span><span>Generate README.md after the repo exists on GitHub — not before</span></li>
+    <li><span class="ico ico-ok">✓</span><span>Set GitHub Codespace Secrets for sensitive variables — they inject automatically when a Codespace opens</span></li>
+    <li><span class="ico ico-ok">✓</span><span>After pushing README, click your own Codespace badge and verify the app loads correctly</span></li>
+  </ul>
+
+  <div class="done-badge">Your repos are Codespace-ready on every push</div>
+
+  <div class="cb">Useful links:</div>
+  <ul class="chk" style="margin-top:.5rem">
+    <li><span class="ico ico-ok">✓</span><span><a href="https://code.claude.com/docs/en/best-practices" style="color:var(--blue)">code.claude.com/docs/en/best-practices</a> — official Anthropic best practices</span></li>
+    <li><span class="ico ico-ok">✓</span><span><a href="https://code.claude.com/docs/en/common-workflows" style="color:var(--blue)">code.claude.com/docs/en/common-workflows</a> — step-by-step recipes</span></li>
+    <li><span class="ico ico-ok">✓</span><span><a href="https://containers.dev/implementors/json_reference/" style="color:var(--blue)">containers.dev/implementors/json_reference</a> — full devcontainer.json reference</span></li>
+    <li><span class="ico ico-ok">✓</span><span><a href="https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/setting-up-your-repository/facilitating-quick-creation-and-resumption-of-codespaces" style="color:var(--blue)">GitHub Docs — Codespaces badge &amp; deep links</a></span></li>
+    <li><span class="ico ico-ok">✓</span><span><a href="https://github.com/settings/codespaces" style="color:var(--blue)">github.com/settings/codespaces</a> — set your personal Codespace Secrets</span></li>
+  </ul>
+</div>
+
+</div><!-- /wrap -->
+<script>
+function T(g,id){
+  document.querySelectorAll('#'+g+'-tabs .tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('[id^="'+g+'-"]').forEach(p=>{if(p.classList.contains('tp'))p.classList.remove('on')});
+  const tab=document.querySelector('#'+g+'-tabs .tab[onclick*="\''+id+'\'"]');
+  const panel=document.getElementById(g+'-'+id);
+  if(tab)tab.classList.add('on');
+  if(panel)panel.classList.add('on');
+}
+function c(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},1800);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');btn.textContent='Copied!';btn.classList.add('ok');}
+    catch{btn.textContent='(copy above)'}
+    document.body.removeChild(ta);
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},1800);
+  });
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

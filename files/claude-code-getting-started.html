@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — Getting Started Tutorial</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f8f5;
+    --surface: #ffffff;
+    --surface2: #f3f2ee;
+    --border: #e2e0d8;
+    --border2: #cccac0;
+    --text: #1a1a18;
+    --text2: #5a5a55;
+    --text3: #9a9990;
+    --accent: #c96a2e;
+    --accent-bg: #fdf2eb;
+    --accent-border: #e8b48a;
+    --info: #1a5fa8;
+    --info-bg: #eef4fc;
+    --info-border: #a8c8f0;
+    --success: #1a7a3c;
+    --success-bg: #eef7f2;
+    --success-border: #90d4aa;
+    --warn-bg: #fdf8ec;
+    --warn-border: #e8d088;
+    --warn: #7a5c10;
+    --mono: 'Courier New', Courier, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #18181a;
+      --surface: #222224;
+      --surface2: #2a2a2d;
+      --border: #38383c;
+      --border2: #48484e;
+      --text: #e8e6e0;
+      --text2: #a0a09a;
+      --text3: #606060;
+      --accent: #e08050;
+      --accent-bg: #2a1e14;
+      --accent-border: #7a4820;
+      --info: #5aa0e8;
+      --info-bg: #0e1e32;
+      --info-border: #2a4a78;
+      --success: #50c880;
+      --success-bg: #0e2018;
+      --success-border: #285838;
+      --warn-bg: #201c0e;
+      --warn-border: #484020;
+      --warn: #d0a840;
+      --shadow: 0 1px 4px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    margin-bottom: 2.5rem;
+  }
+  .header-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 560px;
+  }
+
+  /* ── Progress ── */
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width .35s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* ── Step nav pills ── */
+  .steps-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+  .step-pill {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .step-pill:hover { border-color: var(--border2); color: var(--text); }
+  .step-pill.active { background: var(--accent); color: #fff; border-color: transparent; }
+  .step-pill.done { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+
+  /* ── Main card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .card-tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--accent);
+  }
+  .step-counter {
+    font-size: 12px;
+    color: var(--text3);
+    font-weight: 600;
+  }
+  .card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .card .lead {
+    font-size: 15px;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+    line-height: 1.65;
+  }
+
+  /* ── Code blocks ── */
+  .code-block {
+    position: relative;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 48px 14px 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block .cmt { color: var(--text3); }
+  .code-block .kw { color: var(--accent); }
+  .code-block .prompt { color: var(--info); font-style: italic; }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all .15s;
+    font-family: var(--sans);
+  }
+  .copy-btn:hover { background: var(--accent); color: #fff; border-color: transparent; }
+  .copy-btn.copied { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+
+  /* ── Alerts ── */
+  .alert {
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    border-left: 3px solid;
+  }
+  .alert-tip { background: var(--info-bg); color: var(--info); border-color: var(--info); }
+  .alert-warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn-border); }
+  .alert-success { background: var(--success-bg); color: var(--success); border-color: var(--success); }
+  .alert strong { font-weight: 700; }
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  /* ── Check list ── */
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+  .check-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text2); line-height: 1.55; }
+  .check-list .icon {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+  }
+  .icon-ok { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+  .icon-s  { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); font-size: 9px; }
+
+  /* ── Platform tabs ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tab {
+    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border); background: var(--surface2); color: var(--text2);
+    cursor: pointer; transition: all .15s;
+  }
+  .tab:hover { border-color: var(--border2); color: var(--text); }
+  .tab.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent-border); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Command grid ── */
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .cmd-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .cmd-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+  .cmd-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* ── Done badge ── */
+  .done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid var(--success-border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .done-badge::before { content: "✓"; }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text3);
+    margin: 1.25rem 0 8px;
+  }
+
+  /* ── Nav buttons ── */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    gap: 12px;
+  }
+  .btn {
+    padding: 9px 22px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    transition: all .15s;
+    font-family: var(--sans);
+  }
+  .btn:hover { border-color: var(--border2); background: var(--surface2); }
+  .btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: transparent;
+  }
+  .btn-primary:hover { opacity: .88; background: var(--accent); }
+
+  /* ── Resources section ── */
+  .resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  .resource-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s;
+    display: block;
+  }
+  .resource-card:hover { border-color: var(--border2); }
+  .resource-card .r-title { font-size: 14px; font-weight: 700; color: var(--info); margin-bottom: 4px; }
+  .resource-card .r-url { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .card { padding: 1.25rem; }
+    .header h1 { font-size: 24px; }
+    .cmd-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; }
+    .steps-nav, .nav-row, .copy-btn { display: none; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">Anthropic · Claude Code</div>
+    <h1>Getting Started Tutorial</h1>
+    <p>Install Claude Code and run your first AI-assisted coding session in under 10 minutes.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:16.66%"></div></div>
+    <span class="progress-label" id="progress-label">Step 1 of 6</span>
+  </div>
+
+  <div class="steps-nav" id="steps-nav">
+    <div class="step-pill active" data-step="0" onclick="goTo(0)">1. Prerequisites</div>
+    <div class="step-pill" data-step="1" onclick="goTo(1)">2. Install</div>
+    <div class="step-pill" data-step="2" onclick="goTo(2)">3. Authenticate</div>
+    <div class="step-pill" data-step="3" onclick="goTo(3)">4. First session</div>
+    <div class="step-pill" data-step="4" onclick="goTo(4)">5. Hello World</div>
+    <div class="step-pill" data-step="5" onclick="goTo(5)">6. Key commands</div>
+  </div>
+
+  <div id="step-container"></div>
+
+</div>
+
+<script>
+const TOTAL = 6;
+let current = 0;
+const completed = new Set();
+let activePlatform = 'mac';
+
+const steps = [
+  // ── Step 0: Prerequisites ──────────────────────────────────────
+  {
+    tag: "Step 1 of 6",
+    title: "Prerequisites",
+    lead: "Before installing Claude Code, confirm you have the following. The native installer handles everything automatically — no manual Node.js setup needed.",
+    html: `
+      <ul class="check-list">
+        <li><span class="icon icon-ok">✓</span>
+          <span><strong>Operating system:</strong> macOS 13+ (Ventura), Ubuntu 20.04+ / Debian 10+, or Windows 10 (build 1809+) with WSL or PowerShell.</span></li>
+        <li><span class="icon icon-ok">✓</span>
+          <span><strong>Paid Claude account:</strong> Pro ($20/mo), Max, Team, or Enterprise — or an Anthropic Console account with pre-purchased API credits.</span></li>
+        <li><span class="icon icon-ok">✓</span>
+          <span><strong>Node.js 18+:</strong> Only required if you use the npm install path. The native installer (recommended) has zero dependencies — skip this if using the native installer.</span></li>
+        <li><span class="icon icon-ok">✓</span>
+          <span><strong>Internet connection:</strong> Required for authentication and model inference. The tool itself runs locally.</span></li>
+      </ul>
+      <div class="alert alert-tip">
+        <strong>Tip:</strong> Start with a Pro plan. Usage resets every 5 hours with no overage fees. Upgrade to Max if you hit limits regularly during heavy sessions.
+      </div>
+      <div class="alert alert-tip">
+        <strong>Access methods:</strong> Claude Code is available as a terminal CLI, VS Code extension, JetBrains plugin, desktop app, and web interface — all using the same account.
+      </div>
+    `
+  },
+
+  // ── Step 1: Install ────────────────────────────────────────────
+  {
+    tag: "Step 2 of 6",
+    title: "Install Claude Code",
+    lead: "The native installer is the recommended method — no dependencies, auto-updates in the background, and completes in under a minute.",
+    html: `
+      <div class="tabs" id="platform-tabs">
+        <div class="tab active" onclick="setPlatform('mac')">macOS / Linux</div>
+        <div class="tab" onclick="setPlatform('win')">Windows</div>
+        <div class="tab" onclick="setPlatform('brew')">Homebrew</div>
+        <div class="tab" onclick="setPlatform('npm')">npm</div>
+      </div>
+
+      <div class="tab-content active" id="tab-mac">
+        <p class="section-label">Open Terminal and run the native installer</p>
+        <div class="code-block">curl -fsSL https://claude.ai/install.sh | sh<button class="copy-btn" onclick="copyText(this, 'curl -fsSL https://claude.ai/install.sh | sh')">Copy</button></div>
+        <div class="alert alert-tip"><strong>WSL users:</strong> Open your WSL terminal and run this same command — it works identically to the Linux path.</div>
+      </div>
+
+      <div class="tab-content" id="tab-win">
+        <p class="section-label">Open PowerShell as Administrator and run</p>
+        <div class="code-block">iex (New-Object System.Net.WebClient).DownloadString('https://claude.ai/install.ps1')<button class="copy-btn" onclick="copyText(this, &quot;iex (New-Object System.Net.WebClient).DownloadString('https://claude.ai/install.ps1')&quot;)">Copy</button></div>
+        <div class="alert alert-warn"><strong>Note:</strong> WinGet (<code>winget install Anthropic.ClaudeCode</code>) also works but does not auto-update — run <code>winget upgrade Anthropic.ClaudeCode</code> periodically.</div>
+      </div>
+
+      <div class="tab-content" id="tab-brew">
+        <p class="section-label">Install via Homebrew (macOS)</p>
+        <div class="code-block">brew install --cask claude-code<button class="copy-btn" onclick="copyText(this, 'brew install --cask claude-code')">Copy</button></div>
+        <div class="alert alert-warn"><strong>Note:</strong> Homebrew does not auto-update Claude Code. Run <code>brew upgrade --cask claude-code</code> periodically to get the latest version.</div>
+      </div>
+
+      <div class="tab-content" id="tab-npm">
+        <p class="section-label">Install via npm (requires Node.js 18+)</p>
+        <div class="code-block">npm install -g @anthropic-ai/claude-code<button class="copy-btn" onclick="copyText(this, 'npm install -g @anthropic-ai/claude-code')">Copy</button></div>
+        <div class="alert alert-warn"><strong>Do not use <code>sudo npm install</code>.</strong> If you get permission errors, use <a href="https://github.com/nvm-sh/nvm" style="color:inherit">nvm</a> to install Node.js in your home directory instead.</div>
+      </div>
+
+      <hr>
+      <p class="section-label">Verify the installation</p>
+      <div class="code-block">claude --version<button class="copy-btn" onclick="copyText(this, 'claude --version')">Copy</button></div>
+      <div class="alert alert-tip"><strong>Not found?</strong> Restart your terminal — PATH updates take effect in a new shell session. If the issue persists, try a fresh reinstall.</div>
+    `
+  },
+
+  // ── Step 2: Authenticate ───────────────────────────────────────
+  {
+    tag: "Step 3 of 6",
+    title: "Authenticate",
+    lead: "Claude Code uses browser-based login for personal machines. Your credentials are stored locally and persist across sessions — you only need to do this once.",
+    html: `
+      <p class="section-label">Navigate to any project directory, then launch</p>
+      <div class="code-block"><span class="cmt"># Go to your project (or any folder)</span>
+cd ~/my-project
+
+<span class="cmt"># Start Claude Code</span>
+claude<button class="copy-btn" onclick="copyText(this, 'cd ~/my-project\nclaude')">Copy</button></div>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+        On first launch, Claude Code opens your default browser to <strong>claude.ai</strong> for a one-time sign-in.
+        Return to the terminal after signing in — the CLI receives an authentication token automatically.
+      </p>
+      <div class="alert alert-tip">
+        Credentials are saved in <code>~/.claude/</code>. To switch accounts later, run <code>/login</code> inside any session.
+      </div>
+      <hr>
+      <p class="section-label">API key authentication (for CI/CD &amp; headless environments)</p>
+      <div class="code-block"><span class="cmt"># Set your API key as an environment variable</span>
+export ANTHROPIC_API_KEY=sk-ant-xxxxxxxx<button class="copy-btn" onclick="copyText(this, 'export ANTHROPIC_API_KEY=sk-ant-xxxxxxxx')">Copy</button></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+        Generate an API key from the <strong>Anthropic Console</strong> at console.anthropic.com.
+        API usage is billed per token — a "Claude Code" workspace is auto-created in the Console for cost tracking.
+      </p>
+      <div class="alert alert-tip">
+        <strong>Subscription vs API billing:</strong> With Pro/Max, Claude Code usage is included in your monthly plan (subject to limits). With an API key, you pay per token. Subscriptions are simpler for regular use.
+      </div>
+    `
+  },
+
+  // ── Step 3: First session ──────────────────────────────────────
+  {
+    tag: "Step 4 of 6",
+    title: "Start your first session",
+    lead: "Navigate to any project directory and launch Claude Code. You'll see the welcome screen with your working directory, current model, and usage info.",
+    html: `
+      <p class="section-label">Launch and explore your codebase</p>
+      <div class="code-block">claude<button class="copy-btn" onclick="copyText(this, 'claude')">Copy</button></div>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+        Start by asking Claude to understand your project — it reads files on-demand, no manual context required.
+      </p>
+      <div class="code-block"><span class="prompt">&gt;</span> What does this project do? Walk me through the architecture.<button class="copy-btn" onclick="copyText(this, 'What does this project do? Walk me through the architecture.')">Copy</button></div>
+      <div class="code-block"><span class="prompt">&gt;</span> What are the main entry points and dependencies?<button class="copy-btn" onclick="copyText(this, 'What are the main entry points and dependencies?')">Copy</button></div>
+      <div class="alert alert-tip">
+        <strong>Permission system:</strong> Claude Code always asks for approval before modifying any files. Review every diff before it's applied, or enable "Accept all" mode for a session.
+      </div>
+      <hr>
+      <p class="section-label">Model selection</p>
+      <ul class="check-list">
+        <li><span class="icon icon-s">S</span>
+          <span><strong>Sonnet 4.6</strong> — Fast and cost-effective. Use for ~80% of tasks: writing functions, fixing bugs, adding features, writing tests, explaining code.</span></li>
+        <li><span class="icon icon-s">O</span>
+          <span><strong>Opus 4.6</strong> — More powerful, higher cost. Use for the hardest 20%: large-scale refactoring, complex architectural decisions, and tasks needing the 1M token context window.</span></li>
+      </ul>
+      <div class="alert alert-tip">Switch models mid-session with <code>/model</code>. Start on Sonnet and escalate to Opus only when you need it.</div>
+    `
+  },
+
+  // ── Step 4: Hello World ────────────────────────────────────────
+  {
+    tag: "Step 5 of 6",
+    title: "Hello World — your first task",
+    lead: "Build something real. Ask Claude Code to create a simple script, approve the diff, then iterate in natural language.",
+    html: `
+      <p class="section-label">Ask Claude to write your first script</p>
+      <div class="code-block"><span class="prompt">&gt;</span> Create a Hello World script in Python that prints the current date and time, then asks the user for their name and greets them.<button class="copy-btn" onclick="copyText(this, 'Create a Hello World script in Python that prints the current date and time, then asks the user for their name and greets them.')">Copy</button></div>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+        Claude will propose a file (e.g., <code>hello.py</code>), show you a diff, and wait for your approval. After approving, run it:
+      </p>
+      <div class="code-block">python hello.py<button class="copy-btn" onclick="copyText(this, 'python hello.py')">Copy</button></div>
+      <hr>
+      <p class="section-label">Iterate in natural language</p>
+      <div class="code-block"><span class="prompt">&gt;</span> Add a countdown timer that counts from 5 to 1 before the greeting.<button class="copy-btn" onclick="copyText(this, 'Add a countdown timer that counts from 5 to 1 before the greeting.')">Copy</button></div>
+      <div class="code-block"><span class="prompt">&gt;</span> Add input validation so the script handles an empty name gracefully.<button class="copy-btn" onclick="copyText(this, 'Add input validation so the script handles an empty name gracefully.')">Copy</button></div>
+      <div class="alert alert-tip">
+        <strong>Use <code>/plan</code> for multi-file tasks.</strong> If a task touches more than 2 files, type <code>/plan</code> first. Claude will outline the steps and wait for your approval before making any changes.
+      </div>
+      <hr>
+      <p class="section-label">Set up CLAUDE.md for persistent context</p>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:10px;line-height:1.6;">
+        <code>CLAUDE.md</code> is a special file Claude reads automatically at the start of every session. Use it to store your project's coding conventions, tech stack, and preferences.
+      </p>
+      <div class="code-block"><span class="prompt">&gt;</span> Create a CLAUDE.md file documenting this project's structure, language, and coding conventions.<button class="copy-btn" onclick="copyText(this, 'Create a CLAUDE.md file documenting this project\'s structure, language, and coding conventions.')">Copy</button></div>
+      <div class="alert alert-tip">Keep <code>CLAUDE.md</code> concise — it loads into every session's context. Link to external docs rather than pasting large blocks of text.</div>
+    `
+  },
+
+  // ── Step 5: Key commands ───────────────────────────────────────
+  {
+    tag: "Step 6 of 6",
+    title: "Essential commands &amp; next steps",
+    lead: "The slash commands and keyboard shortcuts you'll use every day. Bookmark this page for reference.",
+    html: `
+      <p class="section-label">Slash commands</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">/plan</div><div class="cmd-desc">Outline steps before making changes. Use for any task touching 2+ files.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/clear</div><div class="cmd-desc">Reset conversation history while keeping your CLAUDE.md context loaded.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/model</div><div class="cmd-desc">Switch between Sonnet 4.6 (fast) and Opus 4.6 (powerful) mid-session.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/doctor</div><div class="cmd-desc">Run a diagnostic check — green checkmarks confirm a healthy setup.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/help</div><div class="cmd-desc">List all available commands, shortcuts, and current session info.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/login</div><div class="cmd-desc">Switch accounts or re-authenticate if your session token expires.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/context</div><div class="cmd-desc">Show what files and context are currently loaded in the session.</div></div>
+        <div class="cmd-card"><div class="cmd-name">/compact</div><div class="cmd-desc">Summarize the conversation to free up context window space.</div></div>
+      </div>
+
+      <p class="section-label">Keyboard shortcuts</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">Tab</div><div class="cmd-desc">Autocomplete commands and file paths.</div></div>
+        <div class="cmd-card"><div class="cmd-name">↑ / ↓</div><div class="cmd-desc">Navigate previous prompts in session history.</div></div>
+        <div class="cmd-card"><div class="cmd-name">Ctrl+C</div><div class="cmd-desc">Cancel the current operation or Claude's running task.</div></div>
+        <div class="cmd-card"><div class="cmd-name">Ctrl+L</div><div class="cmd-desc">Clear the terminal screen (session context is preserved).</div></div>
+      </div>
+
+      <div class="done-badge">You're ready to code with Claude Code!</div>
+
+      <p class="section-label">Continue learning</p>
+      <div class="resources">
+        <a class="resource-card" href="https://code.claude.com/docs/en/quickstart">
+          <div class="r-title">Official quickstart</div>
+          <div class="r-url">code.claude.com/docs/en/quickstart</div>
+        </a>
+        <a class="resource-card" href="https://docs.claude.com/en/docs/claude-code/overview">
+          <div class="r-title">Full documentation</div>
+          <div class="r-url">docs.claude.com/en/docs/claude-code</div>
+        </a>
+        <a class="resource-card" href="https://console.anthropic.com">
+          <div class="r-title">Anthropic Console</div>
+          <div class="r-url">console.anthropic.com</div>
+        </a>
+      </div>
+    `
+  }
+];
+
+function render() {
+  const s = steps[current];
+  const pct = Math.round(((current + 1) / TOTAL) * 100);
+
+  // Progress
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Step ${current + 1} of ${TOTAL}`;
+
+  // Pills
+  document.querySelectorAll('.step-pill').forEach((p, i) => {
+    p.classList.remove('active', 'done');
+    if (i === current) p.classList.add('active');
+    else if (completed.has(i)) p.classList.add('done');
+  });
+
+  // Card
+  document.getElementById('step-container').innerHTML = `
+    <div class="card">
+      <div class="card-meta">
+        <div class="card-tag">${s.tag}</div>
+        <div class="step-counter">${current + 1} / ${TOTAL}</div>
+      </div>
+      <h2>${s.title}</h2>
+      <p class="lead">${s.lead}</p>
+      ${s.html}
+      <div class="nav-row">
+        <button class="btn" onclick="goTo(${current - 1})" ${current === 0 ? 'disabled' : ''}>← Back</button>
+        <button class="btn btn-primary" onclick="advance()">
+          ${current === TOTAL - 1 ? 'Done ✓' : 'Next →'}
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Restore platform tab state
+  if (current === 1) {
+    setTimeout(() => setPlatform(activePlatform), 10);
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTo(i) {
+  if (i < 0 || i >= TOTAL) return;
+  completed.add(current);
+  current = i;
+  render();
+}
+
+function advance() {
+  completed.add(current);
+  if (current < TOTAL - 1) { current++; render(); }
+}
+
+function setPlatform(id) {
+  activePlatform = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const tab = document.querySelector(`.tab[onclick*="'${id}'"]`);
+  const content = document.getElementById('tab-' + id);
+  if (tab) tab.classList.add('active');
+  if (content) content.classList.add('active');
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    // Fallback for browsers without clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); btn.textContent = 'Copied!'; }
+    catch { btn.textContent = 'Copy text above'; }
+    document.body.removeChild(ta);
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
